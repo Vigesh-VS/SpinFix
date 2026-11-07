@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: MIT
+# All hooks use tools already installed in .venv (from the hashed lock file) or the
+# gitleaks program on PATH (installed with winget), so pre-commit downloads nothing.
+# Setup once:  .venv\Scripts\pre-commit install
+default_install_hook_types: [pre-commit, commit-msg]
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: ./.venv/Scripts/python.exe -m ruff check --fix
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: ruff format
+        entry: ./.venv/Scripts/python.exe -m ruff format
+        language: system
+        types: [python]
+      - id: mypy
+        name: mypy
+        entry: ./.venv/Scripts/python.exe -m mypy
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: bandit
+        name: bandit
+        entry: ./.venv/Scripts/python.exe -m bandit -q -c pyproject.toml -r spinfix
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: gitleaks
+        name: gitleaks (staged changes)
+        entry: ./.venv/Scripts/python.exe scripts/gitleaks_hook.py
+        language: system
+        pass_filenames: false
+      - id: no-ai-attribution
+        name: no AI attribution in commit message
+        entry: ./.venv/Scripts/python.exe scripts/check_commit_msg.py
+        language: system
+        stages: [commit-msg]

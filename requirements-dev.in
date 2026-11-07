@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: MIT
+# Development tools (never bundled). Compile with:
+#   pip-compile --generate-hashes --strip-extras -o requirements-dev.lock requirements-dev.in
+-r requirements.in
+bandit
+mypy
+pip-audit
+pip-tools
+pre-commit
+pytest
+ruff

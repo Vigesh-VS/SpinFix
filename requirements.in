@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: MIT
+# Runtime dependencies of the Spinfix app. Compile with:
+#   pip-compile --generate-hashes --strip-extras -o requirements.lock requirements.in
+# Every entry needs Vigesh's approval and an entry in THIRD_PARTY_NOTICES.md.
+# (none yet — M0 is an empty app)
