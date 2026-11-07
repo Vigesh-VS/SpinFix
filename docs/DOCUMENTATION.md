@@ -209,7 +209,7 @@ from the active Explorer window via the Shell COM API (`IShellWindows` → `IFol
 | Language | Python 3.12 | PSF | Vigesh's main language; fast to build |
 | UI | PySide6 (Qt 6) | LGPL-3.0 | Transparent overlay windows, tray, drag-drop, painting |
 | Windows APIs | ctypes, pywin32 | PSF | Mouse/key state, Explorer COM, shell |
-| Images | Pillow, pillow-heif | HPND, BSD | Formats, resize, compress, HEIC/AVIF |
+| Images | Pillow, pi-heif | HPND, BSD (+LGPL libheif) | Formats, resize, compress, HEIC read |
 | PDF render/text | pypdfium2 | Apache/BSD | Google's PDFium engine |
 | PDF edit | pikepdf | MPL-2.0 | Merge, split, rotate, compress, AES-256 |
 | Video/audio | FFmpeg (external) | LGPL/GPL program | Industry standard; not bundled |
@@ -221,10 +221,9 @@ from the active Explorer window via the Shell COM API (`IShellWindows` → `IFol
 | Tests | pytest, pytest-qt | MIT | |
 | Quality | ruff, mypy, bandit, pip-audit, gitleaks, CodeQL | various | Lint, types, security |
 
-**License check needed in M3:** pillow-heif's prebuilt Windows wheels may bundle the GPL
-`x265` encoder alongside LGPL `libheif`/`libde265`. Spinfix only needs to *read* HEIC, so
-before shipping, confirm what the wheel contains and, if needed, use a decode-only build or
-Windows' own HEIF decoder (WIC) instead.
+**License check (done in M3):** pillow-heif's Windows wheel bundles the GPL `x265` encoder,
+so Spinfix uses **pi-heif** instead — the same project's decode-only build (BSD-3 with
+LGPL-3 `libheif`/`libde265` DLLs, no GPL encoder). Spinfix only needs to *read* HEIC.
 
 **Not used on purpose:** PyMuPDF (AGPL — would force the whole app to AGPL), HandBrake
 (GPL; FFmpeg gives the same encoders with more control), Electron (too heavy).
@@ -275,7 +274,36 @@ Short, human, actionable:
 - "Video tools need FFmpeg. **Download it** (≈ 80 MB) or install with winget."
 - "This file says .jpg but isn't an image, so Spinfix left it alone."
 
-## 11. Credits
+## 11. Action reference
+
+Every action can also run from the command line: `python -m spinfix.cli run <id> <files>`
+(`-o key=value` for options). `python -m spinfix.cli list <files>` shows what fits.
+
+| Id | Wheel | What it does | Output name |
+|---|---|---|---|
+| `image.to_jpg/png/webp/pdf/tiff/bmp/gif` | Convert | Convert an image (EXIF rotation applied; metadata kept per setting) | `photo.jpg` |
+| `image.combine_pdf` | Convert | 2+ images → one PDF, in selection order | `a combined.pdf` |
+| `pdf.to_jpg`, `pdf.to_png` | Convert | One image per page (folder for multi-page PDFs) | `doc images\doc p1.png` |
+| `pdf.to_txt` | Convert | Text layer → .txt | `doc.txt` |
+| `media.to_mp3/m4a/wav` | Convert | Audio from video/audio (FFmpeg) | `clip.mp3` |
+| `edit.crop/adjust/annotate/redact/background` | Edit | Editors (app only) | `photo Cropped.jpg` … |
+| `image.compress` | Tools | Re-encode smaller (photo PNGs become JPG) | `photo small.jpg` |
+| `image.under_200kb/500kb/1mb`, `image.under_custom` | Tools | Binary search on quality, then resolution; reports best result if impossible | `photo under 200 KB.jpg` |
+| `image.resize_half/1080/3840/custom` | Tools | Resize (longest side for presets) | `photo 1080x720.jpg` |
+| `image.strip_metadata`, `image.strip_gps` | Tools | Remove all photo info / only location | `photo clean.jpg` |
+| `pdf.merge` | Tools | 2+ PDFs → one | `a merged.pdf` |
+| `pdf.split`, `pdf.extract` | Tools | Every page / chosen pages (`1-3, 5, 8-`) | `doc pages\…`, `doc pages 1-3.pdf` |
+| `pdf.rotate_90/270/180` | Tools | Rotate all pages | `doc rotated.pdf` |
+| `pdf.compress`, `pdf.under_1mb/2mb/custom` | Tools | Downsample + re-encode images, object streams | `doc small.pdf` |
+| `media.fit_16mb/25mb/100mb` | Tools | Two-pass H.264 to fit a size | `clip 16MB.mp4` |
+| `archive.unzip` | Tools | Safe unzip into a new folder | `archive\` |
+| `ocr.copy_text` | Smart | Windows OCR → clipboard | — |
+| `share.copy_path`, `share.copy_file`, `archive.zip` | Share | Clipboard / zip | `photo.zip` |
+
+Drag-and-drop note: the wheel always accepts a drop as **copy**. Shift normally means
+"move" in Explorer; accepting as copy guarantees Explorer never deletes the source.
+
+## 12. Credits
 
 Inspired by the open-source projects **Ryshift** (alexriderspy), **DragShift** (llamaboi55)
 and **McGyver** (ferdiunal), all MIT-licensed. Spinfix is an independent implementation.
