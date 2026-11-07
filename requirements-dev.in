@@ -1,11 +1,14 @@
 # SPDX-License-Identifier: MIT
 # Development tools (never bundled). Compile with:
-#   pip-compile --generate-hashes --strip-extras -o requirements-dev.lock requirements-dev.in
+#   pip-compile --strip-extras --allow-unsafe -o requirements-dev.lock requirements-dev.in
+#   python scripts/add_hashes.py requirements-dev.lock   (or --generate-hashes; slower)
 -r requirements.in
 bandit
 mypy
 pip-audit
 pip-tools
 pre-commit
+pyinstaller                              # GPL-2.0+ with bootloader exception — build only
 pytest
+pytest-qt
 ruff

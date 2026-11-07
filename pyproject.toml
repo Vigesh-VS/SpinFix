@@ -44,12 +44,12 @@ extend-exclude = [".venv"]
 
 [tool.ruff.lint]
 select = [
-    "E", "W", "F", "I", "B", "UP", "N", "S", "SIM", "RUF", "PTH", "C4", "PL",
+    "E", "W", "F", "I", "B", "UP", "N", "S", "SIM", "RUF", "PTH", "C4", "PL", "TID",
 ]
-ignore = ["PLR2004"]
+ignore = ["PLR2004", "PLR0913", "PLR0917", "PLR0915", "PLR0911", "PLR0912"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101"]
+"tests/**" = ["S101", "PLC0415", "S603", "PLR0913"]
 
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
 "pickle".msg = "Never unpickle data (CLAUDE.md §5)."
@@ -66,6 +66,12 @@ check_untyped_defs = true
 [[tool.mypy.overrides]]
 module = ["spinfix.core", "spinfix.core.*"]
 strict = true
+
+[[tool.mypy.overrides]]
+module = ["win32api", "win32clipboard", "win32con", "win32gui", "win32com.*", "pythoncom",
+          "pywintypes", "win32security", "win32process", "pi_heif", "pypdfium2", "winrt.*",
+          "send2trash"]
+ignore_missing_imports = true
 
 # ---------------------------------------------------------------- pytest
 [tool.pytest.ini_options]

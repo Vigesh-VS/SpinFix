@@ -1,5 +1,19 @@
 # SPDX-License-Identifier: MIT
 # Runtime dependencies of the Spinfix app. Compile with:
-#   pip-compile --generate-hashes --strip-extras -o requirements.lock requirements.in
+#   pip-compile --strip-extras -o requirements.lock requirements.in
+#   python scripts/add_hashes.py requirements.lock   (or --generate-hashes; slower)
 # Every entry needs Vigesh's approval and an entry in THIRD_PARTY_NOTICES.md.
-# (none yet — M0 is an empty app)
+pikepdf                                  # MPL-2.0 — PDF merge/split/rotate/compress
+pillow                                   # MIT-CMU — images
+pi-heif                                  # BSD-3 (+LGPL-3 libheif/libde265) — HEIC read only
+pypdfium2                                # BSD-3/Apache-2.0 — PDF render and text
+pyside6-essentials                       # LGPL-3.0 — UI
+pywin32 ; sys_platform == "win32"        # PSF — Windows APIs
+send2trash                               # BSD-3 — undo to Recycle Bin
+winrt-runtime ; sys_platform == "win32"  # MIT — Windows OCR
+winrt-Windows.Foundation ; sys_platform == "win32"
+winrt-Windows.Foundation.Collections ; sys_platform == "win32"
+winrt-Windows.Globalization ; sys_platform == "win32"
+winrt-Windows.Graphics.Imaging ; sys_platform == "win32"
+winrt-Windows.Media.Ocr ; sys_platform == "win32"
+winrt-Windows.Storage.Streams ; sys_platform == "win32"

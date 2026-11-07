@@ -3,6 +3,7 @@
 # gitleaks program on PATH (installed with winget), so pre-commit downloads nothing.
 # Setup once:  .venv\Scripts\pre-commit install
 default_install_hook_types: [pre-commit, commit-msg]
+default_stages: [pre-commit]
 repos:
   - repo: local
     hooks:
