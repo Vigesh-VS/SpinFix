@@ -26,9 +26,9 @@ def test_version_flag(capsys: pytest.CaptureFixture[str]) -> None:
     assert capsys.readouterr().out.strip() == f"Spinfix {__version__}"
 
 
-def test_python_m_spinfix() -> None:
+def test_python_m_spinfix_version() -> None:
     result = subprocess.run(
-        [sys.executable, "-m", "spinfix"],
+        [sys.executable, "-m", "spinfix", "--version"],
         capture_output=True,
         text=True,
         timeout=30,
@@ -42,7 +42,16 @@ def test_core_does_not_import_qt() -> None:
         "import sys, spinfix.core; "
         "sys.exit(any(m.startswith(('PySide6', 'PyQt')) for m in sys.modules))"
     )
-    result = subprocess.run(  # noqa: S603 — fixed argument list, no shell
-        [sys.executable, "-c", code], timeout=30, check=False
-    )
+    result = subprocess.run([sys.executable, "-c", code], timeout=30, check=False)
     assert result.returncode == 0
+
+
+def test_python_m_spinfix_cli() -> None:
+    result = subprocess.run(
+        [sys.executable, "-m", "spinfix.cli"],
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=True,
+    )
+    assert result.stdout.strip() == f"Spinfix {__version__}"

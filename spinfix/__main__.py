@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2026 Vigesh
-"""Entry point for `python -m spinfix`."""
+"""Entry point: `python -m spinfix` starts the app (`python -m spinfix.cli` for the CLI)."""
 
 import sys
 
-from spinfix.cli import main
+from spinfix.app.main import run
 
-sys.exit(main())
+sys.exit(run(sys.argv[1:]))
